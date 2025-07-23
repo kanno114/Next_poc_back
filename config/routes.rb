@@ -13,6 +13,6 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   namespace :api do
-    get 'time', to: 'time#index'
+    get 'hello', to: 'hello#index'
   end
 end
