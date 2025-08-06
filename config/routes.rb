@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
+      resources :posts
       post :signin, to: 'sessions#create'
       post :signup, to: 'registrations#create'
       post :oauth_register, to: 'registrations#oauth_register'
