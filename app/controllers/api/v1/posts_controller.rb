@@ -16,6 +16,7 @@ class Api::V1::PostsController < ApplicationController
     if @post.save
       render json: post_json(@post), status: :created
     else
+      Rails.logger.error("Post creation failed: #{@post.errors.full_messages}")
       render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
     end
   end
@@ -45,7 +46,7 @@ class Api::V1::PostsController < ApplicationController
 
   # 受信時のパラメータを定義
   def post_params
-    params.require(:post).permit(:title, :body, :user_id, tag_ids: [])
+    params.require(:post).permit(:title, :body, :latitude, :longitude, :user_id, tag_ids: [])
   end
 
   # 送信時のJSONフォーマットを定義
@@ -54,6 +55,8 @@ class Api::V1::PostsController < ApplicationController
       id: post.id,
       title: post.title,
       body: post.body,
+      longitude: post.longitude,
+      latitude: post.latitude,
       created_at: post.created_at,
       updated_at: post.updated_at,
       user: {
