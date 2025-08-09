@@ -69,4 +69,11 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # spec/support 以下のファイルを全て読み込む
+  Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
+  # JsonHelper をリクエストスペックで使えるようにする
+  RSpec.configure do |config|
+    config.include JsonHelper, type: :request
+  end
 end

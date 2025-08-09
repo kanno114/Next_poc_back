@@ -75,4 +75,5 @@ Rails.application.configure do
 
   config.hosts << "back"
   config.hosts << "localhost"
+  config.hosts << "www.example.com"
 end
