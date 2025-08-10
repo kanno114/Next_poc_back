@@ -28,5 +28,10 @@ module Backend
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # 例外処理用の Rack アプリケーションを設定
+    config.exceptions_app = ->(env) {
+      ErrorsController.action(:show).call(env)
+    }
   end
 end

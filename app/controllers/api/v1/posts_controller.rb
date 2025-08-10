@@ -12,30 +12,18 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(post_params)
-    if @post.save
-      render json: post_json(@post), status: :created
-    else
-      Rails.logger.error("Post creation failed: #{@post.errors.full_messages}")
-      render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
-    end
+    @post = Post.create!(post_params)
+    render json: post_json(@post), status: :created
   end
 
   def update
-    if @post.update(post_params)
-      render json: post_json(@post), status: :ok
-    else
-      render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
-    end
+    @post.update!(post_params)
+    render json: post_json(@post), status: :ok
   end
 
   def destroy
-    @post = Post.find(params[:id])
-    if @post.destroy
-      render json: { message: 'Post deleted successfully' }, status: :ok
-    else
-      render json: { error: 'Failed to delete post' }, status: :unprocessable_entity
-    end
+    @post.destroy!   # set_post 済み
+    render json: { message: 'Post deleted successfully' }, status: :ok
   end
 
   private
