@@ -9,7 +9,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins [
       'http://localhost:3000',
-      '"http://front:3000"',
+      'http://front:3000',
       'https://next-poc-front.vercel.app',
       %r{\Ahttps://next-poc-front-[\w\d]+-kannos-projects-41dbdf7a\.vercel\.app\z}
     ]
