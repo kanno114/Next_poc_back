@@ -3,7 +3,6 @@ class Api::V1::PostsController < ApplicationController
 
   def index
     @posts = Post.includes(:user, :tags, comments: :user).order(created_at: :desc)
-    Rails.logger.info("Posts loaded: #{@posts.count}")
     render json: @posts.map { |post| post_json(post) }, status: :ok
   end
 
@@ -12,8 +11,23 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def create
-    @post = Post.create!(post_params)
+    @post = Post.new(post_params)
+
+    # 天気付与
+    if valid_coords?(@post.latitude, @post.longitude)
+      if (w = Weather::CurrentFetcher.call(lat: @post.latitude, lng: @post.longitude))
+        @post.temperature_c       = w[:temperature_c]
+        @post.humidity_pct        = w[:humidity_pct]
+        @post.pressure_hpa        = w[:pressure_hpa]
+        @post.weather_observed_at = w[:time] ? Time.zone.parse(w[:time]) : Time.zone.now
+        @post.weather_snapshot    = w[:raw]
+      end
+    end
+
+    @post.save!
     render json: post_json(@post), status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: @post.errors.full_messages.presence || [e.message] }, status: :unprocessable_entity
   end
 
   def update
@@ -22,7 +36,7 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def destroy
-    @post.destroy!   # set_post 済み
+    @post.destroy!
     render json: { message: 'Post deleted successfully' }, status: :ok
   end
 
@@ -32,12 +46,15 @@ class Api::V1::PostsController < ApplicationController
     @post = Post.includes(:user, :tags, comments: :user).find(params[:id])
   end
 
-  # 受信時のパラメータを定義
   def post_params
     params.require(:post).permit(:title, :body, :latitude, :longitude, :user_id, tag_ids: [])
   end
 
-  # 送信時のJSONフォーマットを定義
+  def valid_coords?(lat, lng)
+    lat.is_a?(Numeric) && lng.is_a?(Numeric) && lat.finite? && lng.finite? &&
+      lat.between?(-90, 90) && lng.between?(-180, 180)
+  end
+
   def post_json(post)
     {
       id: post.id,
@@ -47,27 +64,24 @@ class Api::V1::PostsController < ApplicationController
       latitude: post.latitude,
       created_at: post.created_at,
       updated_at: post.updated_at,
+      weather: {
+        temperature_c: post.temperature_c,
+        humidity_pct:  post.humidity_pct,
+        pressure_hpa:  post.pressure_hpa,
+        observed_at:   post.weather_observed_at
+      },
       user: {
         id: post.user.id,
         name: post.user.name,
         email: post.user.email
       },
-      tags: post.tags.map { |tag|
-        {
-          id: tag.id,
-          name: tag.name
-        }
-      },
+      tags: post.tags.map { |tag| { id: tag.id, name: tag.name } },
       comments: post.comments.map { |comment|
         {
           id: comment.id,
           body: comment.body,
           created_at: comment.created_at,
-          user: {
-            id: comment.user.id,
-            name: comment.user.name,
-            email: comment.user.email
-          }
+          user: { id: comment.user.id, name: comment.user.name, email: comment.user.email }
         }
       }
     }
