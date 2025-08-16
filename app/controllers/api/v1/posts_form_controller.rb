@@ -28,7 +28,7 @@ class Api::V1::PostsFormController < ApplicationController
       )
 
       # 天気データの取得・保存
-      WeatherService.create_or_update_weather_observation(
+      Weather::WeatherService.create_or_update_weather_observation(
         post: post,
         lat: post_params[:location][:latitude],
         lng: post_params[:location][:longitude],
@@ -57,7 +57,7 @@ class Api::V1::PostsFormController < ApplicationController
 
         # 座標と日時が変更された場合、天気データを更新
         if (location_changed || @post.event_datetime.to_date != @post_form.event_datetime.to_date)
-          WeatherService.create_or_update_weather_observation(
+          Weather::WeatherService.create_or_update_weather_observation(
             post: @post,
             lat: @post_form.latitude,
             lng: @post_form.longitude,
