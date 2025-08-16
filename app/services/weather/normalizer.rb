@@ -1,14 +1,15 @@
-# app/services/weather/normalizer.rb
 module Weather
   class Normalizer
-    # Open‑Meteoの current + hourly を共通形へ
-    # 戻り値例:
-    # {
-    #   current: { temperature: 28.1, humidity: 72, pressure: 1005.1, time: "2025-08-13T11:00:00+09:00" },
-    #   hourly: [{ time: "2025-08-10T00:00:00+09:00", temperature: ..., humidity: ..., pressure: ... }, ...]
-    # }
-    def self.call(forecast:, archive:)
-      current = if forecast["current"]
+
+    def self.call(forecast:, archive:, current: nil)  # currentパラメータを追加
+      current_data = if current && current["current"]
+        {
+          temperature: current.dig("current", "temperature_2m"),
+          humidity:    current.dig("current", "relative_humidity_2m"),
+          pressure:    current.dig("current", "surface_pressure"),
+          time:        current.dig("current", "time")
+        }
+      elsif forecast["current"]
         {
           temperature: forecast.dig("current", "temperature_2m"),
           humidity:    forecast.dig("current", "relative_humidity_2m"),
@@ -30,7 +31,7 @@ module Weather
       hourly.each { |h| map[h[:time]] = h }
       hourly = map.values.sort_by { |h| h[:time] }
 
-      { current:, hourly: }
+      { current: current_data, hourly: }
     end
 
     def self.zip_hourly(hourly)

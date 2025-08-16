@@ -1,7 +1,3 @@
-require "net/http"
-require "json"
-require "date"
-
 module Weather
   module Providers
     class OpenMeteoArchive
@@ -9,7 +5,7 @@ module Weather
 
       def key; "openmeteo-archive"; end
 
-      def fetch(lat, lng, past_days:, timezone:)
+      def fetch(lat, lng, timezone: "Asia/Tokyo", past_days:)
         return nil if past_days <= 0
         end_date   = Date.today - 1
         start_date = end_date - (past_days - 1)
