@@ -24,11 +24,11 @@ module Weather
     def fetch_weather_data
       # 指定日付のデータを取得
       archive_data = with_retry { @archive.fetch(@lat, @lng, past_days: 1, timezone: @timezone) }
-      
+
       if archive_data && archive_data["hourly"]
         # 指定日付のデータを抽出
         target_data = extract_data_for_date(archive_data["hourly"], @date)
-        
+
         if target_data && target_data[:temperature]  # nilチェックを追加
           {
             temperature_c: target_data[:temperature],

@@ -4,7 +4,7 @@ class Api::V1::PostsController < ApplicationController
   before_action :set_post, only: [:show, :destroy]
 
   def index
-    @posts = Post.includes(:user, :tags, :location, :weather_observation).order(created_at: :desc)
+    @posts = Post.includes(:user, :tags).order(created_at: :desc)
     render json: @posts.map { |post| PostSerializer.new(post).as_json }, status: :ok
   end
 
@@ -20,7 +20,7 @@ class Api::V1::PostsController < ApplicationController
   private
 
   def set_post
-    @post = Post.includes(:user, :tags, :location, :weather_observation)
+    @post = Post.includes(:user, :tags)
                 .find(params[:id])
   end
 end

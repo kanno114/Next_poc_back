@@ -1,3 +1,5 @@
+require 'net/http'
+
 module Weather
   module Providers
     class OpenMeteoForecast
