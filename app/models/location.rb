@@ -1,5 +1,5 @@
 class Location < ApplicationRecord
-  has_many :posts
+  belongs_to :user
 
   validates :latitude,
             presence: true,

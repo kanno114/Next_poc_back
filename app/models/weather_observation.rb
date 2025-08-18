@@ -1,5 +1,5 @@
 class WeatherObservation < ApplicationRecord
-  belongs_to :post
+  belongs_to :daily_log
 
   validates :temperature_c,
             numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 60 },

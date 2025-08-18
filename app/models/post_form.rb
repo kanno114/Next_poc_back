@@ -6,16 +6,11 @@ class PostForm
   attribute :body, :string
   attribute :event_datetime, :string
   attribute :user_id, :integer
-  attribute :location_id, :integer
-  attribute :latitude, :float
-  attribute :longitude, :float
   attribute :tag_ids, array: true, default: []
 
   validates :title, presence: true, length: { maximum: 100 }
   validates :body, presence: true, length: { maximum: 1000 }
   validates :event_datetime, presence: true
-  validates :latitude, numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90 }, allow_nil: true
-  validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, allow_nil: true
 
   def self.from_params(params)
     new(
@@ -23,9 +18,6 @@ class PostForm
       body: params[:body],
       event_datetime: params[:event_datetime],
       user_id: params[:user_id],
-      location_id: params[:location_id],
-      latitude: params.dig(:location, :latitude),
-      longitude: params.dig(:location, :longitude),
       tag_ids: params[:tag_ids] || []
     )
   end
@@ -40,20 +32,10 @@ class PostForm
     # user_idが送信されている場合のみ含める
     attributes[:user_id] = user_id if user_id.present?
 
-    # location_idが送信されている場合のみ含める
-    attributes[:location_id] = location_id if location_id.present?
-
     # tag_idsが空でない場合のみ含める
     attributes[:tag_ids] = tag_ids if tag_ids.present?
 
     attributes
-  end
-
-  def to_location_attributes
-    {
-      latitude: latitude,
-      longitude: longitude
-    }
   end
 
   private
