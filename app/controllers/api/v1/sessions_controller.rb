@@ -24,6 +24,7 @@ class Api::V1::SessionsController < ApplicationController
         id: user.id,
         email: user.email,
         name: user.name,
+        image: user.image || nil,
         provider: user_identity.provider,
         uid: user_identity.uid
       }, status: :ok
@@ -48,6 +49,7 @@ class Api::V1::SessionsController < ApplicationController
         id: user.id,
         email: user.email,
         name: user.name,
+        image: user.image || nil,
         provider: "email"
       }, status: :ok
     else
