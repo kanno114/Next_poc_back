@@ -9,6 +9,21 @@ class Api::V1::DailyLogsController < ApplicationController
     render json: @daily_logs.map { |daily_log| DailyLogSerializer.new(daily_log).as_json }, status: :ok
   end
 
+  def by_date_range
+    start_date = params[:start_date]&.to_date
+    end_date = params[:end_date]&.to_date
+
+    if start_date && end_date
+      @daily_logs = DailyLog.includes(:user, :weather_observation)
+                            .where(user: @current_user)
+                            .by_date_range(start_date, end_date)
+                            .order(date: :desc)
+      render json: @daily_logs.map { |daily_log| DailyLogSerializer.new(daily_log).as_json }, status: :ok
+    else
+      render json: { error: 'start_date and end_date are required' }, status: :bad_request
+    end
+  end
+
   def show
     render json: DailyLogSerializer.new(@daily_log).as_json, status: :ok
   end
@@ -18,20 +33,7 @@ class Api::V1::DailyLogsController < ApplicationController
     render json: { message: 'Daily log deleted successfully' }, status: :ok
   end
 
-  def by_date_range
-    start_date = params[:start_date]&.to_date
-    end_date = params[:end_date]&.to_date
 
-    if start_date && end_date
-      @daily_logs = DailyLog.includes(:user, :weather_observation)
-                            .where(user: current_user)
-                            .by_date_range(start_date, end_date)
-                            .order(date: :desc)
-      render json: @daily_logs.map { |daily_log| DailyLogSerializer.new(daily_log).as_json }, status: :ok
-    else
-      render json: { error: 'start_date and end_date are required' }, status: :bad_request
-    end
-  end
 
   private
 

@@ -3,8 +3,11 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :posts, only: [:index, :show, :destroy]
       resources :posts, only: [:create, :update], controller: 'posts_form'
+
+      get 'daily_logs/by_date_range', to: 'daily_logs#by_date_range'
       resources :daily_logs, only: [:index, :show, :destroy]
       resources :daily_logs, only: [:create, :update], controller: 'daily_logs_form'
+
       resource :weather, only: :create
       post :signin, to: 'sessions#create'
       post :signup, to: 'registrations#create'
