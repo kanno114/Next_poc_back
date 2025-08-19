@@ -121,8 +121,8 @@ end
 puts "📝 Creating daily logs with weather and location data..."
 
 users.each do |user|
-  # 過去30日間のdaily_logを作成
-  30.times do |i|
+  # 過去100日間のdaily_logを作成
+  100.times do |i|
     log_date = Date.current - i
 
     # 気分とスコアの相関関係を作成
