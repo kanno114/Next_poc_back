@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_18_092835) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_19_092337) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,13 +21,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_18_092835) do
     t.decimal "sleep_hours", precision: 3, scale: 1
     t.integer "mood"
     t.text "memo"
-    t.bigint "weather_observation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["date"], name: "index_daily_logs_on_date"
     t.index ["user_id", "date"], name: "index_daily_logs_on_user_id_and_date", unique: true
     t.index ["user_id"], name: "index_daily_logs_on_user_id"
-    t.index ["weather_observation_id"], name: "index_daily_logs_on_weather_observation_id"
     t.check_constraint "mood >= '-5'::integer AND mood <= 5", name: "chk_daily_log_mood"
     t.check_constraint "score >= 0 AND score <= 100", name: "chk_daily_log_score"
     t.check_constraint "sleep_hours >= 0::numeric AND sleep_hours <= 24::numeric", name: "chk_daily_log_sleep"
@@ -115,7 +113,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_18_092835) do
   end
 
   add_foreign_key "daily_logs", "users"
-  add_foreign_key "daily_logs", "weather_observations"
   add_foreign_key "locations", "users"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"

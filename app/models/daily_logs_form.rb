@@ -7,8 +7,6 @@ class DailyLogsForm
   attribute :sleep_hours, :integer
   attribute :mood, :string
   attribute :memo, :string
-  # 天気情報
-  attribute :weather_observation_id, :integer
 
   validates :date, presence: true
   validates :score, presence: true
@@ -34,8 +32,6 @@ class DailyLogsForm
       mood: mood,
       memo: memo
     }
-
-    attributes[:weather_observation_id] = weather_observation_id if weather_observation_id.present?
 
     attributes
   end
