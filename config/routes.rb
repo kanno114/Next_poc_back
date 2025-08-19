@@ -1,11 +1,15 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :posts
+      resources :posts, only: [:index, :show, :destroy]
+      resources :posts, only: [:create, :update], controller: 'posts_form'
+      resources :daily_logs, only: [:index, :show, :destroy]
+      resources :daily_logs, only: [:create, :update], controller: 'daily_logs_form'
       resource :weather, only: :create
       post :signin, to: 'sessions#create'
       post :signup, to: 'registrations#create'
       post :oauth_register, to: 'registrations#oauth_register'
+      resource :profile, only: [:show, :update]
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

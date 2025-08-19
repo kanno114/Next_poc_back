@@ -5,19 +5,21 @@ module Weather
   class Fetcher
     TTL = 10.minutes
 
-    def initialize(lat:, lng:, past_days:, future_days:, timezone:)
+    def initialize(lat:, lng:, past_days:, future_days:, timezone: "Asia/Tokyo")
       @lat, @lng = lat, lng
       @past_days, @future_days, @timezone = past_days, future_days, timezone
       @forecast = Providers::OpenMeteoForecast.new
       @archive  = Providers::OpenMeteoArchive.new
+      @current  = Providers::OpenMeteoCurrent.new
     end
 
     def call
       key = cache_key
       Rails.cache.fetch(key, expires_in: TTL) do
-        f = with_retry { @forecast.fetch(@lat, @lng, future_days: @future_days, timezone: @timezone) }
-        a = with_retry { @archive.fetch(@lat, @lng, past_days: @past_days, timezone: @timezone) } if @past_days.to_i > 0
-        Weather::Normalizer.call(forecast: f, archive: a)
+        forecast = with_retry { @forecast.fetch(@lat, @lng, future_days: @future_days, timezone: @timezone) }
+        archive  = with_retry { @archive.fetch(@lat, @lng, past_days: @past_days, timezone: @timezone) } if @past_days.to_i > 0
+        current  = with_retry { @current.fetch(@lat, @lng, timezone: @timezone) }
+        Weather::Normalizer.call(forecast:, archive:, current:)
       end
     end
 
