@@ -23,7 +23,7 @@ require 'rspec/rails'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
+Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
 
 # Ensures that the test database schema matches the current schema file.
 # If there are pending migrations it will invoke `db:test:prepare` to
@@ -34,6 +34,7 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
@@ -63,17 +64,18 @@ RSpec.configure do |config|
   # behaviour is considered legacy and will be removed in a future version.
   #
   # To enable this behaviour uncomment the line below.
-  # config.infer_spec_type_from_file_location!
+  config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
-  # spec/support 以下のファイルを全て読み込む
-  Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
-  # JsonHelper をリクエストスペックで使えるようにする
-  RSpec.configure do |config|
-    config.include JsonHelper, type: :request
+  # FactoryBotの設定
+  config.include FactoryBot::Syntax::Methods
+
+  # ActiveJobのテスト設定
+  config.before(:each) do
+    ActiveJob::Base.queue_adapter = :test
   end
 end
