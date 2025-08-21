@@ -13,6 +13,8 @@ class WeatherObservation < ApplicationRecord
 
   validate :observed_at_required_if_snapshot_present
 
+  scope :in_range, ->(time_range) { where(observed_at: time_range) }
+
   private
 
   def observed_at_required_if_snapshot_present

@@ -43,7 +43,7 @@ class Api::V1::DailyLogsController < ApplicationController
   end
 
   def daily_log_params
-    params.require(:daily_log).permit(:date, :score, :sleep_hours, :mood, :memo, :weather_observation_id)
+    params.require(:daily_log).permit(:date, :score, :sleep_hours, :mood, :memo)
   end
 
   def set_current_user
