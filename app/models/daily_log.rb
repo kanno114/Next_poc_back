@@ -21,4 +21,11 @@ class DailyLog < ApplicationRecord
   def self.find_or_initialize_by_user_and_date(user, date)
     find_or_initialize_by(user: user, date: date)
   end
+
+  def jst_range
+    # 日本時間の当日の範囲を返す
+    start_time = date.beginning_of_day.in_time_zone('Asia/Tokyo')
+    end_time = date.end_of_day.in_time_zone('Asia/Tokyo')
+    start_time..end_time
+  end
 end

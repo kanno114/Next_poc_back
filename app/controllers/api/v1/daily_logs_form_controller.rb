@@ -1,5 +1,9 @@
 class Api::V1::DailyLogsFormController < ApplicationController
   before_action :set_daily_log, only: [:update]
+  after_action :recalc_score, only: [:create, :update]
+
+# test
+# curl -X POST http://localhost:3001/api/v1/daily_logs -H "Content-Type: application/json" -d '{"daily_log":{"date":"2025-08-20","score":80,"sleep_hours":7,"mood":5,"memo":"今日は良い天気でした","user_id":1}}'
 
   def create
     user = User.find(daily_log_params[:user_id])
@@ -21,6 +25,8 @@ class Api::V1::DailyLogsFormController < ApplicationController
     end
   end
 
+  # test
+  # curl -X PUT http://localhost:3001/api/v1/daily_logs/1 -H "Content-Type: application/json" -d '{"daily_log":{"date":"2025-08-20","score":80,"sleep_hours":7,"mood":5,"memo":"今日は良い天気でした","user_id":1}}'
   def update
     @daily_log_form = DailyLogsForm.from_params(daily_log_params)
     @daily_log = DailyLog.find(params[:id])
@@ -40,6 +46,10 @@ class Api::V1::DailyLogsFormController < ApplicationController
   end
 
   def daily_log_params
-    params.require(:daily_log).permit(:id,:date, :score, :sleep_hours, :mood, :memo, :user_id)
+    params.require(:daily_log).permit(:id, :date, :score, :sleep_hours, :mood, :memo, :user_id)
+  end
+
+  def recalc_score
+    RecalcDailyScoreJob.perform_later(@daily_log.id, )
   end
 end
