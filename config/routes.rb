@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       resources :posts, only: [:create, :update], controller: 'posts_form'
 
       get 'daily_logs/by_date_range', to: 'daily_logs#by_date_range'
+      get 'daily_logs/today', to: 'daily_logs#today'
       resources :daily_logs, only: [:index, :show, :destroy]
       resources :daily_logs, only: [:create, :update], controller: 'daily_logs_form'
 
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
       post :signup, to: 'registrations#create'
       post :oauth_register, to: 'registrations#oauth_register'
       resource :profile, only: [:show, :update]
+      resources :suggestions, only: [:index]
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

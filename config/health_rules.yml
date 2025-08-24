@@ -1,0 +1,51 @@
+rules:
+  - key: sleep_short
+    condition: "sleep_hours < 6.0"
+    title: "睡眠不足。昼に小休止を"
+    message: "今日は睡眠が短め（%{sleep_hours}h）。15–20分の仮眠とカフェイン控えめを。"
+    tags: ["sleep"]
+    severity: "80"
+
+  - key: hot_weather
+    title: "猛暑日。水分補給と日差しの遮蔽を。"
+    condition: "temperature_c > 30"
+    message: "今日は猛暑です（%{temperature_c}℃）。水分補給と日差しの遮蔽を。"
+    tags: ["temperature"]
+    severity: "80"
+
+  - key: cold_weather
+    title: "寒い日。暖房の使用を検討してください。"
+    condition: "temperature_c < 10"
+    message: "今日は寒いです（%{temperature_c}℃）。暖房の使用を検討してください。"
+    tags: ["temperature"]
+    severity: "80"
+
+  - key: high_humidity
+    title: "湿気が高い日。除湿剤の使用を検討してください。"
+    condition: "humidity_pct > 80"
+    message: "今日は高湿度です（%{humidity_pct}%%）。除湿剤の使用を検討してください。"
+    tags: ["humidity"]
+    severity: "80"
+
+  - key: low_humidity
+    title: "乾燥日。乾燥に注意してください。"
+    condition: "humidity_pct < 30"
+    message: "今日は低湿度です（%{humidity_pct}%%）。加湿器の使用を検討してください。"
+    tags: ["humidity"]
+    severity: "80"
+
+  - key: high_pressure
+    title: "高気圧日。気圧の急降下を防ぐために。"
+    condition: "pressure_hpa > 1020"
+    message: "今日は高気圧です（%{pressure_hpa}hPa）。気圧の急降下を防ぐために。"
+    tags: ["pressure"]
+    severity: "80"
+
+  - key: low_pressure
+    title: "低気圧日。気圧の急上昇を防ぐために。"
+    condition: "pressure_hpa < 980"
+    message: "今日は低気圧です（%{pressure_hpa}hPa）。気圧の急上昇を防ぐために。"
+    tags: ["pressure"]
+    severity: "80"
+
+  # ...他ルール

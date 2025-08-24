@@ -1,5 +1,5 @@
 class Api::V1::DailyLogsController < ApplicationController
-  before_action :set_current_user, only: [:index, :by_date_range]
+  before_action :set_current_user, only: [:index, :by_date_range, :today]
   before_action :set_daily_log, only: [:show, :destroy]
 
   def index
@@ -24,6 +24,19 @@ class Api::V1::DailyLogsController < ApplicationController
     end
   end
 
+  def today
+    @daily_log = DailyLog.includes(:user, :weather_observation)
+                        .where(user: @current_user)
+                        .where(date: Date.current)
+                        .first
+    
+    if @daily_log
+      render json: DailyLogSerializer.new(@daily_log).as_json, status: :ok
+    else
+      render json: { error: '今日のログが見つかりません' }, status: :not_found
+    end
+  end
+
   def show
     render json: DailyLogSerializer.new(@daily_log).as_json, status: :ok
   end
@@ -32,8 +45,6 @@ class Api::V1::DailyLogsController < ApplicationController
     @daily_log.destroy!
     render json: { message: 'Daily log deleted successfully' }, status: :ok
   end
-
-
 
   private
 
