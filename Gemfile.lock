@@ -89,6 +89,9 @@ GEM
     debug (1.10.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    dentaku (3.5.5)
+      bigdecimal
+      concurrent-ruby
     diff-lcs (1.6.2)
     dotenv (3.1.8)
     dotenv-rails (3.1.8)
@@ -298,6 +301,7 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
+  dentaku (~> 3.5)
   dotenv-rails
   factory_bot_rails
   faker
